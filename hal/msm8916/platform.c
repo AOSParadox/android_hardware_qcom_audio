@@ -3307,3 +3307,14 @@ int platform_set_audio_device_interface(const char * device_name,
 done:
     return ret;
 }
+
+int platform_set_snd_device_name(snd_device_t device, const char *name)
+{
+    if ((device < SND_DEVICE_MIN) || (device >= SND_DEVICE_MAX)) {
+        ALOGE("%s:: Invalid snd_device = %d", __func__, device);
+        return -EINVAL;
+    }
+
+    device_table[device] = strdup(name);
+    return 0;
+}
