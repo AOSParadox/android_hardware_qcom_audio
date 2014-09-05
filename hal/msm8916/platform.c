@@ -3354,6 +3354,17 @@ bool platform_check_and_set_codec_backend_cfg(struct audio_device* adev, struct 
     return false;
 }
 
+int platform_set_snd_device_name(snd_device_t device, const char *name)
+{
+    if ((device < SND_DEVICE_MIN) || (device >= SND_DEVICE_MAX)) {
+        ALOGE("%s:: Invalid snd_device = %d", __func__, device);
+        return -EINVAL;
+    }
+
+    device_table[device] = strdup(name);
+    return 0;
+}
+
 int platform_set_stream_channel_map(void *platform, audio_channel_mask_t channel_mask, int snd_id)
 {
     int ret = 0;
