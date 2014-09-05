@@ -1106,6 +1106,13 @@ int platform_set_audio_device_interface(const char * device_name __unused,
 {
     return -ENOSYS;
 }
+
+int platform_set_snd_device_name(snd_device_t snd_device __unused,
+                                 const char * name __unused)
+{
+    return -ENOSYS;
+}
+
 int platform_set_channel_map(void *platform __unused, int ch_count __unused,
                              char *ch_map __unused, int snd_id __unused)
 {
