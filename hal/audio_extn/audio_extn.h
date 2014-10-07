@@ -46,10 +46,6 @@
 #define AUDIO_DEVICE_OUT_FM_TX 0x8000000
 #endif
 
-#ifndef FLAC_OFFLOAD_ENABLED
-#define AUDIO_FORMAT_FLAC 0x1B000000UL
-#endif
-
 #ifndef WMA_OFFLOAD_ENABLED
 #define AUDIO_FORMAT_WMA 0x12000000UL
 #define AUDIO_FORMAT_WMA_PRO 0x13000000UL
@@ -70,11 +66,7 @@ int audio_extn_parse_compress_metadata(struct stream_out *out,
                                        struct str_parms *parms);
 #endif
 
-#ifdef PCM_OFFLOAD_ENABLED_24
 #define PCM_OUTPUT_BIT_WIDTH (config->offload_info.bit_width)
-#else
-#define PCM_OUTPUT_BIT_WIDTH (CODEC_BACKEND_DEFAULT_BIT_WIDTH)
-#endif
 
 #define MAX_LENGTH_MIXER_CONTROL_IN_INT                  (128)
 
