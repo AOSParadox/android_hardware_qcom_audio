@@ -564,7 +564,7 @@ int32_t audio_extn_asphere_get_parameters(const struct audio_device *adev,
 #endif
 
 void audio_extn_set_parameters(struct audio_device *adev,
-                               struct str_parms *parms)
+                               struct str_parms *parms __unused)
 {
    audio_extn_set_anc_parameters(adev, parms);
    audio_extn_set_fluence_parameters(adev, parms);
