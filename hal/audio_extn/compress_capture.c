@@ -107,7 +107,7 @@ size_t audio_extn_compr_cap_get_buffer_size(audio_format_t format)
     if (format == AUDIO_FORMAT_AMR_WB)
         /*One AMR WB frame is 61 bytes. Return that to the caller.
         The buffer size is not altered, that is still period size.*/
-        return AMR_WB_FRAMESIZE;
+        return 61; /*Hard Code*/
     else
         return 0;
 }
