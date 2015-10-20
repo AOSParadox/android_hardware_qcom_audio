@@ -42,8 +42,10 @@
 #define AUDIO_OUTPUT_FLAG_INCALL_MUSIC 0x8000
 #endif
 
+#ifdef FM_ENABLED
 #ifndef AUDIO_DEVICE_OUT_FM_TX
 #define AUDIO_DEVICE_OUT_FM_TX 0x8000000
+#endif
 #endif
 
 #ifndef WMA_OFFLOAD_ENABLED
