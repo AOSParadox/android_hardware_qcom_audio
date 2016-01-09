@@ -3165,6 +3165,7 @@ int platform_set_audio_device_interface(const char * device_name,
 
 done:
     return ret;
+}
 
 static unsigned int get_best_backend_sample_rate(unsigned int sample_rate) {
 
