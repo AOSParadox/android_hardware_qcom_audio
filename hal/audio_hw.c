@@ -1213,18 +1213,18 @@ static void *offload_thread_loop(void *context)
         send_callback = false;
         switch(cmd->cmd) {
         case OFFLOAD_CMD_WAIT_FOR_BUFFER:
-            ALOGD("copl(%p):calling compress_wait", out);
+            ALOGV("copl(%p):calling compress_wait", out);
             compress_wait(out->compr, -1);
-            ALOGD("copl(%p):out of compress_wait", out);
+            ALOGV("copl(%p):out of compress_wait", out);
             send_callback = true;
             event = STREAM_CBK_EVENT_WRITE_READY;
             break;
         case OFFLOAD_CMD_PARTIAL_DRAIN:
             ret = compress_next_track(out->compr);
             if(ret == 0) {
-                ALOGD("copl(%p):calling compress_partial_drain", out);
+                ALOGV("copl(%p):calling compress_partial_drain", out);
                 ret = compress_partial_drain(out->compr);
-                ALOGD("copl(%p):out of compress_partial_drain", out);
+                ALOGV("copl(%p):out of compress_partial_drain", out);
                 if (ret < 0)
                     ret = -errno;
             }
@@ -1241,9 +1241,9 @@ static void *offload_thread_loop(void *context)
                 ALOGE("%s: Block drain ready event during SSR", __func__);
             break;
         case OFFLOAD_CMD_DRAIN:
-            ALOGD("copl(%p):calling compress_drain", out);
+            ALOGV("copl(%p):calling compress_drain", out);
             compress_drain(out->compr);
-            ALOGD("copl(%p):calling compress_drain", out);
+            ALOGV("copl(%p):calling compress_drain", out);
             send_callback = true;
             event = STREAM_CBK_EVENT_DRAIN_READY;
             break;
@@ -2002,7 +2002,7 @@ static ssize_t out_write(struct audio_stream_out *stream, const void *buffer,
     }
 
     if (is_offload_usecase(out->usecase)) {
-        ALOGD("copl(%p): writing buffer (%zu bytes) to compress device", out, bytes);
+        ALOGVV("copl(%p): writing buffer (%zu bytes) to compress device", out, bytes);
         if (out->send_new_metadata) {
             ALOGD("copl(%p):send new gapless metadata", out);
             compress_set_gapless_metadata(out->compr, &out->gapless_mdata);
@@ -2014,7 +2014,7 @@ static ssize_t out_write(struct audio_stream_out *stream, const void *buffer,
             ret = -errno;
         ALOGVV("%s: writing buffer (%zd bytes) to compress device returned %zd", __func__, bytes, ret);
         if (ret >= 0 && ret < (ssize_t)bytes) {
-            ALOGD("No space available in compress driver, post msg to cb thread");
+            ALOGV("No space available in compress driver, post msg to cb thread");
             send_offload_cmd_l(out, OFFLOAD_CMD_WAIT_FOR_BUFFER);
         } else if (-ENETRESET == ret) {
             ALOGE("copl %s: received sound card offline state on compress write", __func__);
@@ -2034,7 +2034,7 @@ static ssize_t out_write(struct audio_stream_out *stream, const void *buffer,
         if (out->pcm) {
             if (out->muted)
                 memset((void *)buffer, 0, bytes);
-            ALOGE("%s: writing buffer (%zd bytes) to pcm device", __func__, bytes);
+            ALOGVV("%s: writing buffer (%zd bytes) to pcm device", __func__, bytes);
             if (out->usecase == USECASE_AUDIO_PLAYBACK_AFE_PROXY)
                 ret = pcm_mmap_write(out->pcm, (void *)buffer, bytes);
             else
