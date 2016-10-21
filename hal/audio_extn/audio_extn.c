@@ -563,8 +563,8 @@ int32_t audio_extn_asphere_get_parameters(const struct audio_device *adev,
 }
 #endif
 
-void audio_extn_set_parameters(struct audio_device *adev __unused,
-                               struct str_parms *parms __unused)
+void audio_extn_set_parameters(struct audio_device *adev,
+                               struct str_parms *parms)
 {
    audio_extn_set_anc_parameters(adev, parms);
    audio_extn_set_fluence_parameters(adev, parms);
@@ -606,8 +606,8 @@ int audio_extn_parse_compress_metadata(struct stream_out *out,
     int ret = 0;
     char value[32];
 
-#ifdef FLAC_OFFLOAD_ENABLED
     if (out->format == AUDIO_FORMAT_FLAC) {
+#ifdef FLAC_OFFLOAD_ENABLED
         ret = str_parms_get_str(parms, AUDIO_OFFLOAD_CODEC_FLAC_MIN_BLK_SIZE, value, sizeof(value));
         if (ret >= 0) {
             out->compr_config.codec->options.flac_dec.min_blk_size = atoi(value);
@@ -633,7 +633,10 @@ int audio_extn_parse_compress_metadata(struct stream_out *out,
               out->compr_config.codec->options.flac_dec.max_blk_size,
               out->compr_config.codec->options.flac_dec.min_frame_size,
               out->compr_config.codec->options.flac_dec.max_frame_size);
+#endif
+    }
 
+    else if (out->format == AUDIO_FORMAT_ALAC) {
         ret = str_parms_get_str(parms, AUDIO_OFFLOAD_CODEC_ALAC_FRAME_LENGTH, value, sizeof(value));
         if (ret >= 0) {
             out->compr_config.codec->options.alac.frame_length = atoi(value);
@@ -706,8 +709,6 @@ int audio_extn_parse_compress_metadata(struct stream_out *out,
     }
 
     else if (out->format == AUDIO_FORMAT_APE) {
-#endif
-    if (out->format == AUDIO_FORMAT_APE) {
         ret = str_parms_get_str(parms, AUDIO_OFFLOAD_CODEC_APE_COMPATIBLE_VERSION, value, sizeof(value));
         if (ret >= 0) {
             out->compr_config.codec->options.ape.compatible_version = atoi(value);
