@@ -484,7 +484,8 @@ bool AudioPolicyManagerCustom::isOffloadSupported(const audio_offload_info_t& of
     const bool allowOffloadStreamingWithVideo = property_get_bool("av.streaming.offload.enable",
                                                                false /*default value*/);
     if(offloadInfo.has_video && offloadInfo.is_streaming && !allowOffloadStreamingWithVideo) {
-       ALOGW("offload disabled by av.streaming.offload.enable = %s ", propValue );
+       ALOGW("offload disabled by av.streaming.offload.enable = %d",
+	       allowOffloadStreamingWithVideo);
        return false;
     }
 
@@ -1535,7 +1536,12 @@ audio_io_handle_t AudioPolicyManagerCustom::getOutputForDevice(
     // only allow deep buffering for music stream type
     if (stream != AUDIO_STREAM_MUSIC) {
         flags = (audio_output_flags_t)(flags &~AUDIO_OUTPUT_FLAG_DEEP_BUFFER);
+    } else if (/* stream == AUDIO_STREAM_MUSIC && */
+            flags == AUDIO_OUTPUT_FLAG_NONE &&
+            property_get_bool("audio.deep_buffer.media", false /* default_value */)) {
+        flags = (audio_output_flags_t)AUDIO_OUTPUT_FLAG_DEEP_BUFFER;
     }
+
     if (stream == AUDIO_STREAM_TTS) {
         flags = AUDIO_OUTPUT_FLAG_TTS;
     }
